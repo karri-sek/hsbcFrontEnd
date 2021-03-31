@@ -1,20 +1,8 @@
 import React from 'react'
-import { rest } from 'msw'
-import { setupServer } from 'msw/node'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import App from './App'
 
 describe('App ',()=>{
-    const server = setupServer(
-        rest.get('/getCities', (req, res, ctx) => {
-            console.log(" hiii",req)
-          return res(ctx.json({ result: {noOfCitiesMatched: 4 }}))
-        })
-      )
-        beforeAll(() => server.listen())
-        afterEach(() => server.resetHandlers())
-        afterAll(() => server.close())
-
     test('renders the label to ', () => {
         render(<App />)
         const labelElement = screen.getByText(/Enter letter city name starts with/i)
@@ -31,6 +19,18 @@ describe('App ',()=>{
         const { getByText } = render(<App />)
         const buttonElement = getByText(/Submit/)
         expect(buttonElement).toBeInTheDocument()
+    })
+    
+    test('a text box to enter the city name', () => {
+        const { getByRole } = render(<App />)
+        const buttonElement = getByRole('textbox')
+        expect(buttonElement).toBeInTheDocument()
+    })
+
+    test('the button should have disabled property', () => {
+        const { getByRole } = render(<App />)
+        const buttonElement = getByRole('button')
+        expect(buttonElement).toHaveAttribute('disabled')
     })
 })
 
